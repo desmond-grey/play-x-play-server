@@ -8,27 +8,19 @@ const pingPongService = require('../lib/ping-pong-service');
 
 /* GET users listing. */
 // noinspection JSUnusedLocalSymbols,JSUnresolvedFunction
-router.get('/game', function(req, res, next) {
-  // todo: just a mockup
-  // todo: this would be for an active game.  What happens if you GET an inactive game ID?
-  res.json([
-        {
-          id: 'a768fb3a-aae9-4c12-808c-b3603c5aa799',
-          points_scored: 0,
-          has_serve: false,
-          side: 0         // which side of the table the payer is standing on.  0 or 1
-        },
-        {
-          id: 'ed70d277-1648-407a-ab93-da146e834b5e',
-          points_scored: 0,
-          has_serve: true,
-          side: 1
-        }
-  ]);
+router.get('/game/:gameId', function(req, res, next) {
+    let gameState = pingPongService.getGameState(req.params.gameId);
+
+    if(gameState) {
+        return gameState
+    } else {
+        res.status(404);
+        throw new Error('No game with that ID')
+    }
 });
 
 /* GET users listing. */
-// noinspection JSUnusedLocalSymbols
+// noinspection JSUnusedLocalSymbols,JSUnresolvedFunction
 router.post('/game/', function(req, res, next) {
     const gameStatus = pingPongService.startGame(req.body.tableId, req.body.players);
     res.json(gameStatus);
