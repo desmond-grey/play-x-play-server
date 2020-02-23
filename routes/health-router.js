@@ -4,7 +4,8 @@ const router = express.Router();
 /* GET users listing. */
 // noinspection JSUnusedLocalSymbols
 router.get('/', function(req, res, next) {
-  res.send({'status': 'healthy'});
+  // todo: just a hardcoded mockup for now
+  res.json({'status': 'healthy'});
 });
 
 module.exports = router;
