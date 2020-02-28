@@ -12,10 +12,10 @@ router.get('/game/:gameId', function(req, res, next) {
     let gameState = pingPongService.getGameState(req.params.gameId);
 
     if(gameState) {
-        return gameState
+        res.json(gameState);
     } else {
         res.status(404);
-        throw new Error('No game with that ID')
+        res.send('No game with that ID');
     }
 });
 
@@ -27,5 +27,4 @@ router.post('/game/', function(req, res, next) {
 });
 
 
-// todo: can I move this near the top of the code?  I'm used to it there
 module.exports = router;
