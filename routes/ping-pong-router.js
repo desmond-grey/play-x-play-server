@@ -19,11 +19,24 @@ router.get('/game/:gameId', function(req, res, next) {
     }
 });
 
+
 /* GET users listing. */
 // noinspection JSUnusedLocalSymbols,JSUnresolvedFunction
 router.post('/game/', function(req, res, next) {
     const gameStatus = pingPongService.startGame(req.body.tableId, req.body.players);
     res.json(gameStatus);
+});
+
+
+/* POST . */
+// noinspection JSUnusedLocalSymbols,JSUnresolvedFunction
+router.post('/tables/:tableId/events', function(req, res, next) {
+    // todo: handle other event types
+    if (req.body.eventType === 'POINT_SCORED_AT_TABLE_POSITION') {
+        console.log('here');
+        const gameStatus = pingPongService.scorePointAtTablePosition(req.body.tableId, req.body.tablePosition);
+        res.json(gameStatus);
+    }
 });
 
 

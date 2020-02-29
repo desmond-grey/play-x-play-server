@@ -104,3 +104,23 @@ describe("/ping-pong/game endpoints", () => {
             });
     });
 });
+
+// noinspection NodeModulesDependencies,ES6ModulesDependencies
+describe("/ping-pong/tables/:tableId/events endpoints", () => {
+    // noinspection JSUnresolvedFunction
+    it("POST scoring event succeeds", (done) => {
+        chai.request(app)
+            .post(`/ping-pong/tables/${tableId}/events`)
+            .send({
+                eventType: 'POINT_SCORED_AT_TABLE_POSITION',
+                tableId: tableId,
+                tablePosition: 2
+            })
+            .end((err, res) => {
+                expect(res.status).to.equal(200);
+                expect(res.body).to.be.a('object');
+                expect(res.body.gameId).to.be.a('string');
+                done();
+            });
+    });
+});
