@@ -3,12 +3,19 @@ const router = express.Router();
 
 const pingPongService = require('../lib/ping-pong-service');
 
-// all endpoint-paths below relative to /ping-pong (see app.js)
+// NOTE: all endpoint-paths below relative to /ping-pong (see app.js)
 
-
-/* GET users listing. */
+/* Start a game via POST  */
 // noinspection JSUnusedLocalSymbols,JSUnresolvedFunction
-router.get('/game/:gameId', function(req, res, next) {
+router.post('/games/', function(req, res, next) {
+    const gameStatus = pingPongService.startGame(req.body.tableId, req.body.players);
+    res.json(gameStatus);
+});
+
+
+/* GET game state using gameId */
+// noinspection JSUnusedLocalSymbols,JSUnresolvedFunction
+router.get('/games/:gameId', function(req, res, next) {
     let gameState = pingPongService.getGameState(req.params.gameId);
 
     if(gameState) {
@@ -20,24 +27,33 @@ router.get('/game/:gameId', function(req, res, next) {
 });
 
 
-/* GET users listing. */
+/*
+    POST game events via gameId
+    Sample event: {"eventType": "POINT_SCORED_BY_PLAYER", "playerId": "azul"}
+*/
 // noinspection JSUnusedLocalSymbols,JSUnresolvedFunction
-router.post('/game/', function(req, res, next) {
-    const gameStatus = pingPongService.startGame(req.body.tableId, req.body.players);
-    res.json(gameStatus);
-});
-
-
-/* POST . */
-// noinspection JSUnusedLocalSymbols,JSUnresolvedFunction
-router.post('/tables/:tableId/events', function(req, res, next) {
+router.post('/games/:gameId/events', function(req, res, next) {
     // todo: handle other event types
-    if (req.body.eventType === 'POINT_SCORED_AT_TABLE_POSITION') {
-        console.log('here');
-        const gameStatus = pingPongService.scorePointAtTablePosition(req.body.tableId, req.body.tablePosition);
+    if (req.body.eventType === 'POINT_SCORED_BY_PLAYER') {
+        console.log(`req.body: ${JSON.stringify(req.body)}`);
+        const gameStatus = pingPongService.scorePointForPlayer(req.params.gameId, req.body.playerId);
         res.json(gameStatus);
     }
 });
 
+
+/*
+    POST game events via tableId (used in early controller versions)
+    Sample event: {"eventType": "POINT_SCORED_ON_TABLE", "tablePosition": 2}
+*/
+// noinspection JSUnusedLocalSymbols,JSUnresolvedFunction
+router.post('/tables/:tableId/events', function(req, res, next) {
+    // todo: handle other event types
+    if (req.body.eventType === 'POINT_SCORED_ON_TABLE') {
+        console.log(`req.body: ${JSON.stringify(req.body)}`);
+        const gameStatus = pingPongService.scorePointAtTablePosition(req.params.tableId, req.body.tablePosition);
+        res.json(gameStatus);
+    }
+});
 
 module.exports = router;

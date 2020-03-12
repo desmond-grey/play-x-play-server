@@ -28,7 +28,7 @@ let sharedPingPongGameId;
 // noinspection NodeModulesDependencies,ES6ModulesDependencies
 before(function (done) {
     chai.request(app)
-        .post('/ping-pong/game')
+        .post('/ping-pong/games')
         .send({
             'tableId': tableId,
             'players': [
@@ -63,7 +63,7 @@ describe("/ping-pong/game endpoints", () => {
     // noinspection JSUnresolvedFunction
     it("GET game should succeed", (done) => {
         chai.request(app)
-            .get(`/ping-pong/game/${sharedPingPongGameId}`)
+            .get(`/ping-pong/games/${sharedPingPongGameId}`)
             .end((err, res) => {
                 expect(res.status).to.equal(200);
                 expect(res.body).to.be.a('object');
@@ -75,7 +75,7 @@ describe("/ping-pong/game endpoints", () => {
     // noinspection JSUnresolvedFunction
     it("GET game with bad ID should fail", (done) => {
         chai.request(app)
-            .get('/ping-pong/game/foobar')
+            .get('/ping-pong/games/foobar')
             .end((err, res) => {
                 expect(res.status).to.equal(404);
                 console.log(JSON.stringify(err));
@@ -88,7 +88,7 @@ describe("/ping-pong/game endpoints", () => {
     // noinspection JSUnresolvedFunction
     it("POST to create game works successfully", (done) => {
         chai.request(app)
-            .post('/ping-pong/game')
+            .post('/ping-pong/games')
             .send({
                 'tableId': tableId,
                 'players': [
@@ -108,13 +108,31 @@ describe("/ping-pong/game endpoints", () => {
 // noinspection NodeModulesDependencies,ES6ModulesDependencies
 describe("/ping-pong/tables/:tableId/events endpoints", () => {
     // noinspection JSUnresolvedFunction
-    it("POST scoring event succeeds", (done) => {
+    it("POST POINT_SCORED_ON_TABLE event succeeds", (done) => {
         chai.request(app)
             .post(`/ping-pong/tables/${tableId}/events`)
             .send({
-                eventType: 'POINT_SCORED_AT_TABLE_POSITION',
-                tableId: tableId,
+                eventType: 'POINT_SCORED_ON_TABLE',
                 tablePosition: 2
+            })
+            .end((err, res) => {
+                expect(res.status).to.equal(200);
+                expect(res.body).to.be.a('object');
+                expect(res.body.gameId).to.be.a('string');
+                done();
+            });
+    });
+});
+
+// noinspection NodeModulesDependencies,ES6ModulesDependencies
+describe("/ping-pong/games/:gameId/events endpoints", () => {
+    // noinspection JSUnresolvedFunction
+    it("POST POINT_SCORED_BY_PLAYER event succeeds", (done) => {
+        chai.request(app)
+            .post(`/ping-pong/games/${sharedPingPongGameId}/events`)
+            .send({
+                eventType: 'POINT_SCORED_BY_PLAYER',
+                playerId: playerOneId,
             })
             .end((err, res) => {
                 expect(res.status).to.equal(200);
