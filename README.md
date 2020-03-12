@@ -1,5 +1,34 @@
 # Play X Play Server
 
+## API
+
+## Curl Examples
+Change the IP address in the examples below to that of your server:
+
+```shell script
+# checking health
+curl 172.16.0.16:3000/health
+curl ec2-35-166-35-105.us-west-2.compute.amazonaws.com:3000/health
+
+# starting a game
+curl -d '{ "tableId": "prototype_controller", "players": ["rojo", "azul"]}' -H "Content-Type: application/json" -X POST 172.16.0.16:3000/ping-pong/game
+
+# scoring a point on a table by table-position
+curl \
+  -d '{"eventType": "POINT_SCORED_ON_TABLE", "tablePosition": 2}' \
+  -H "Content-Type: application/json" \
+  -X POST \
+  172.16.0.16:3000/ping-pong/tables/prototype_controller/events
+
+# scoring a point for a player
+curl \
+  -d '{"eventType": "POINT_SCORED_BY_PLAYER", "playerId": "azul"}' \
+  -H "Content-Type: application/json" \
+  -X POST \
+  172.16.0.16:3000/ping-pong/tables/proto/events
+```
+
+
 ## Running server locally for development
 1) Install node
 2) Clone the project
@@ -8,8 +37,8 @@ In the project directory:
 3) npm install
 4) npm start
 
-## Managing the public play-x-play-server
 
+## Managing the public play-x-play-server
 The server:
 * runs on a free-tier AWS EC2 instance
 * runs Ubuntu 18.04.3 LTS as the OS
@@ -42,7 +71,6 @@ sudo pm2 monit              # monitor logs, custom metrics, application informat
 ```
 
 
- 
 ## Setting up a Free Tier AWS Server
 
 ### Create and configure an EC2 Instance
@@ -61,7 +89,6 @@ Login using PEM created during EC2 instantiation:
 ```shell script
 ssh -i desmond.pem ubuntu@ec2-35-166-35-105.us-west-2.compute.amazonaws.com
 ```
-
 
 Once logged-in...
 
@@ -94,27 +121,4 @@ sudo npm install pm2 -g
 sudo pm2 startup                # pm2 will auto-start at boot
 sudo pm2 start ./bin/www        # todo: would be better to use "npm start" which is configured to call ./bin/www
 sudo pm2 save                   # ./bin/www will now be started during pm2 startup (at boot)
-```
-
-
-
-## Curl Examples
-Change the IP address in the examples below to that of your server:
-
-```shell script
-# checking health
-curl 172.16.0.16:3000/health
-curl ec2-35-166-35-105.us-west-2.compute.amazonaws.com:3000/health
-
-
-
-# starting a game
-curl -d '{ "tableId": "prototype_controller", "players": ["rojo", "azul"]}' -H "Content-Type: application/json" -X POST 172.16.0.16:3000/ping-pong/game
-
-# scoring a point
-curl \
-  -d '{"eventType": "POINT_SCORED_AT_TABLE_POSITION", "tableId": "prototype_controller", "tablePosition": 2}' \
-  -H "Content-Type: application/json" \
-  -X POST \
-  172.16.0.16:3000/ping-pong/tables/proto/events
 ```
