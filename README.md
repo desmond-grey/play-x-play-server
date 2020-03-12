@@ -8,23 +8,38 @@ In the project directory:
 3) npm install
 4) npm start
 
-## Managing the EC2 Free Tier play-x-play-server
+## Managing the public play-x-play-server
 
-NOTE: We use PM2 (https://www.npmjs.com/package/pm2) to manage the server.  PM2 runs at boot and is configured to
-auto-start the server.
+The server:
+* runs on a free-tier AWS EC2 instance
+* runs Ubuntu 18.04.3 LTS as the OS
+* runs Node 13.10
+* uses PM2 to manage server (https://www.npmjs.com/package/pm2)
 
-todo: test this with a reboot test 
+NOTE: PM2 runs at boot and is configured to auto-start the express js server.
 
 
 ### Logging in to the server 
-```bash
+Password authentication is disabled.  You'll need to generate a key-pair that has access to the server.  Talk to an
+existing admin for access.
+
+```shell script
+# once you have a associated with the server and download, an ssh command looks like this:
 ssh -i desmond.pem ubuntu@ec2-35-166-35-105.us-west-2.compute.amazonaws.com
 ```
 
 Once logged in...
 
 ### Starting the play-x-play-server instance
-todo:
+```shell script
+sudo pm2 list               # list all the PM2 managed apps, which in our case is just our ExpressJS app named "www"
+sudo pm2 describe www       # more details
+sudo pm2 stop www
+sudo pm2 restart www
+sudo pm2 delete www         # remove from PM2 management
+sudo pm2 start ./bin/www
+sudo pm2 monit              # monitor logs, custom metrics, application information  
+```
 
 
  
@@ -43,7 +58,7 @@ todo:
 NOTE: Ensure your pem file (created above) is chmod 400 on your local system (ssh will refuse to us it if its not).
 
 Login using PEM created during EC2 instantiation:
-```bash
+```shell script
 ssh -i desmond.pem ubuntu@ec2-35-166-35-105.us-west-2.compute.amazonaws.com
 ```
 
@@ -51,14 +66,14 @@ ssh -i desmond.pem ubuntu@ec2-35-166-35-105.us-west-2.compute.amazonaws.com
 Once logged-in...
 
 ### Install Node
-```bash
+```shell script
 curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
 sudo apt-get install -y nodejs
 node --version
 ```
 
 ### Install play-x-play server
-```bash
+```shell script
 git clone https://github.com/desmond-grey/play-x-play-server.git
 cd play-x-play-server
 npm install
@@ -70,10 +85,15 @@ npm start       # temp just to see if the server is installed.  We'll actually u
 ```
 
 ### Install pm2 and start server using it
-```bash
+
+Note: I installed pm2 with sudo.  I tried it without (per the docs) but had permission problems.  Looks like this means
+all subsequent pm2 commands also require sudo.
+
+```shell script
 sudo npm install pm2 -g
 sudo pm2 startup                # pm2 will auto-start at boot
 sudo pm2 start ./bin/www        # todo: would be better to use "npm start" which is configured to call ./bin/www
+sudo pm2 save                   # ./bin/www will now be started during pm2 startup (at boot)
 ```
 
 
