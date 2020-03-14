@@ -35,7 +35,6 @@ router.get('/games/:gameId', function(req, res, next) {
 router.post('/games/:gameId/events', function(req, res, next) {
     // todo: handle other event types
     if (req.body.eventType === 'POINT_SCORED_BY_PLAYER') {
-        console.log(`req.body: ${JSON.stringify(req.body)}`);
         const gameStatus = pingPongService.scorePointForPlayer(req.params.gameId, req.body.playerId);
         res.json(gameStatus);
     }
@@ -50,7 +49,6 @@ router.post('/games/:gameId/events', function(req, res, next) {
 router.post('/tables/:tableId/events', function(req, res, next) {
     // todo: handle other event types
     if (req.body.eventType === 'POINT_SCORED_ON_TABLE') {
-        console.log(`req.body: ${JSON.stringify(req.body)}`);
         const gameStatus = pingPongService.scorePointAtTablePosition(req.params.tableId, req.body.tablePosition);
         res.json(gameStatus);
     }

@@ -25,8 +25,8 @@ chai.should();
 // The central/shared ping pong game use by most tests.  created in "before" function
 let sharedPingPongGameId;
 
-// noinspection NodeModulesDependencies,ES6ModulesDependencies
-before(function (done) {
+// noinspection NodeModulesDependencies,ES6ModulesDependencies,JSUnresolvedFunction
+beforeEach(function (done) {
     chai.request(app)
         .post('/ping-pong/games')
         .send({
@@ -138,6 +138,36 @@ describe("/ping-pong/games/:gameId/events endpoints", () => {
                 expect(res.status).to.equal(200);
                 expect(res.body).to.be.a('object');
                 expect(res.body.gameId).to.be.a('string');
+                done();
+            });
+    });
+
+    // noinspection JSUnresolvedFunction
+    it("POST winning POINT_SCORED_BY_PLAYER event properly causes game to end", (done) => {
+        const requester = chai.request(app).keepOpen();
+        Promise.all([
+            requester.post(`/ping-pong/games/${sharedPingPongGameId}/events`).send({eventType: 'POINT_SCORED_BY_PLAYER', playerId: playerOneId}),
+            requester.post(`/ping-pong/games/${sharedPingPongGameId}/events`).send({eventType: 'POINT_SCORED_BY_PLAYER', playerId: playerOneId}),
+            requester.post(`/ping-pong/games/${sharedPingPongGameId}/events`).send({eventType: 'POINT_SCORED_BY_PLAYER', playerId: playerOneId}),
+            requester.post(`/ping-pong/games/${sharedPingPongGameId}/events`).send({eventType: 'POINT_SCORED_BY_PLAYER', playerId: playerOneId}),
+            requester.post(`/ping-pong/games/${sharedPingPongGameId}/events`).send({eventType: 'POINT_SCORED_BY_PLAYER', playerId: playerOneId}),
+            requester.post(`/ping-pong/games/${sharedPingPongGameId}/events`).send({eventType: 'POINT_SCORED_BY_PLAYER', playerId: playerOneId}),
+            requester.post(`/ping-pong/games/${sharedPingPongGameId}/events`).send({eventType: 'POINT_SCORED_BY_PLAYER', playerId: playerOneId}),
+            requester.post(`/ping-pong/games/${sharedPingPongGameId}/events`).send({eventType: 'POINT_SCORED_BY_PLAYER', playerId: playerOneId}),
+            requester.post(`/ping-pong/games/${sharedPingPongGameId}/events`).send({eventType: 'POINT_SCORED_BY_PLAYER', playerId: playerOneId}),
+            requester.post(`/ping-pong/games/${sharedPingPongGameId}/events`).send({eventType: 'POINT_SCORED_BY_PLAYER', playerId: playerOneId})
+        ])
+        .then(responses => { console.log(JSON.stringify(responses))})
+        .then(() => requester.close());
+
+        // 11th point should cause game to end
+        chai.request(app)
+            .post(`/ping-pong/games/${sharedPingPongGameId}/events`)
+            .send({eventType: 'POINT_SCORED_BY_PLAYER', playerId: playerOneId})
+            .end((err, res) => {
+                expect(res.status).to.equal(200);
+                expect(res.body).to.be.a('object');
+                expect(res.body.gameStatus).to.equal('COMPLETE');
                 done();
             });
     });
