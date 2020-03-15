@@ -6,12 +6,9 @@ const
     chai = require('chai'),
     expect = require('chai').expect,
     chaiHttp = require('chai-http'),
-    app = require('../../app')
-;
+    app = require('../../app'),
+    packageJson = require('../../package');
 
-// todo: should probably switch to "expect" (instead of "should") assertions to match what I'm doing in the unit tests
-
-// const pingPongService = require('./ping-pong-service');
 
 // handy IDs for the tests below
 const tableId = 'a8f8hb3a-aae9-4c12-808c-b3603c5hh887';
@@ -57,6 +54,23 @@ describe("health endpoint", () => {
     });
 });
 
+// noinspection NodeModulesDependencies,ES6ModulesDependencies
+describe("version endpoint", () => {
+    // noinspection JSUnresolvedFunction
+    it("Should return current version", (done) => {
+        chai.request(app)
+            .get('/version')
+            .end((err, res) => {
+                expect(res.status).to.equal(200);
+                expect(res.body).to.be.a('object');
+
+                // noinspection JSUnresolvedVariable
+                console.log(JSON.stringify(`version: ${res.body.version}`));
+                expect(res.body.version).to.equal(packageJson.version);
+                done();
+            });
+    });
+});
 
 // noinspection NodeModulesDependencies,ES6ModulesDependencies
 describe("/ping-pong/game endpoints", () => {
