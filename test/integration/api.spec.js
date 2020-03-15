@@ -20,7 +20,7 @@ chai.use(chaiHttp);
 chai.should();
 
 // The central/shared ping pong game use by most tests.  created in "before" function
-let sharedPingPongGameId;
+let sharedPingPongGameId;   // assigned during game create
 
 // noinspection NodeModulesDependencies,ES6ModulesDependencies,JSUnresolvedFunction
 beforeEach(function (done) {
@@ -114,6 +114,32 @@ describe("/ping-pong/game endpoints", () => {
                 expect(res.status).to.equal(200);
                 expect(res.body).to.be.a('object');
                 expect(res.body.gameId).to.be.a('string');
+                done();
+            });
+    });
+});
+
+// noinspection NodeModulesDependencies,ES6ModulesDependencies
+describe("/ping-pong/tables endpoints", () => {
+    // noinspection JSUnresolvedFunction
+    it("GET game by tableId should succeed", (done) => {
+        chai.request(app)
+            .get(`/ping-pong/tables/${tableId}/game`)
+            .end((err, res) => {
+                expect(res.status).to.equal(200);
+                expect(res.body).to.be.a('object');
+                expect(res.body.gameId).to.be.a('string');
+                done();
+            });
+    });
+
+    // noinspection JSUnresolvedFunction
+    it("GET game by tableId with bad ID should fail", (done) => {
+        chai.request(app)
+            .get('/ping-pong/games/foobar/games')
+            .end((err, res) => {
+                expect(res.status).to.equal(404);
+                console.log(JSON.stringify(err));
                 done();
             });
     });

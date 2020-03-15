@@ -28,6 +28,23 @@ router.get('/games/:gameId', function(req, res, next) {
 
 
 /*
+    GET game state using tableId
+    If not game is active for table, return 404
+*/
+// noinspection JSUnusedLocalSymbols,JSUnresolvedFunction
+router.get('/tables/:tableId/game', function(req, res, next) {
+    let gameState = pingPongService.getGameStateForTableId(req.params.tableId);
+
+    if(gameState) {
+        res.json(gameState);
+    } else {
+        res.status(404);
+        res.send('No game active for table with that ID');
+    }
+});
+
+
+/*
     POST game events via gameId
     Sample event: {"eventType": "POINT_SCORED_BY_PLAYER", "playerId": "azul"}
 */
