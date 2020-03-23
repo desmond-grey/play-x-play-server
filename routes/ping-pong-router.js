@@ -39,7 +39,7 @@ router.get('/tables/:tableId/game', function(req, res, next) {
         res.json(gameState);
     } else {
         res.status(404);
-        res.send('No game active for table with that ID');
+        res.json({'errorMessage': 'No game active for table with that ID'});
     }
 });
 
