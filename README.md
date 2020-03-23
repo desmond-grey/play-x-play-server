@@ -6,12 +6,20 @@
 Change the IP address in the examples below to that of your server:
 
 ```shell script
+
 # checking health
 curl 172.16.0.16:3000/health
 curl ec2-35-166-35-105.us-west-2.compute.amazonaws.com:3000/health
 
 # starting a game
-curl -d '{ "tableId": "prototype_controller", "players": ["rojo", "azul"]}' -H "Content-Type: application/json" -X POST 172.16.0.16:3000/ping-pong/game
+curl -d '{ "tableId": "prototype_controller", "players": ["rojo", "azul"]}' -H "Content-Type: application/json" -X POST localhost:3000/ping-pong/games
+curl -d '{ "tableId": "prototype_controller", "players": ["rojo", "azul"]}' -H "Content-Type: application/json" -X POST 172.16.0.16:3000/ping-pong/games
+curl -d '{ "tableId": "prototype_controller", "players": ["rojo", "azul"]}' -H "Content-Type: application/json" -X POST ec2-35-166-35-105.us-west-2.compute.amazonaws.com:3000/ping-pong/games
+
+# getting gameSate by tableId
+curl -i localhost:3000/ping-pong/tables/prototype_controller/game
+curl -i 172.16.0.16:3000/ping-pong/tables/prototype_controller/game
+curl -i ec2-35-166-35-105.us-west-2.compute.amazonaws.com:3000/ping-pong/tables/prototype_controller/game
 
 # scoring a point on a table by table-position
 curl \
