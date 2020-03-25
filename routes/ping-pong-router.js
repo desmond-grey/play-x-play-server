@@ -65,7 +65,7 @@ router.post('/games/:gameId/events', function(req, res, next) {
 // noinspection JSUnusedLocalSymbols,JSUnresolvedFunction
 router.post('/tables/:tableId/events', function(req, res, next) {
     // todo: handle other event types
-    if (req.body.eventType === 'POINT_SCORED_ON_TABLE') {
+    if (req.body.eventType === 'POINT_SCORED_ON_TABLE_AT_POSITION') {
         const gameStatus = pingPongService.scorePointAtTablePosition(req.params.tableId, req.body.tablePosition);
         res.json(gameStatus);
     }
