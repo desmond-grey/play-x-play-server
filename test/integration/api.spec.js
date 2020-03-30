@@ -148,17 +148,31 @@ describe("/ping-pong/tables endpoints", () => {
 // noinspection NodeModulesDependencies,ES6ModulesDependencies
 describe("/ping-pong/tables/:tableId/events endpoints", () => {
     // noinspection JSUnresolvedFunction
-    it("POST POINT_SCORED_ON_TABLE event succeeds", (done) => {
+    it("POST POINT_SCORED_ON_TABLE_AT_POSITION event succeeds", (done) => {
         chai.request(app)
             .post(`/ping-pong/tables/${tableId}/events`)
             .send({
-                eventType: 'POINT_SCORED_ON_TABLE',
+                eventType: 'POINT_SCORED_ON_TABLE_AT_POSITION',
                 tablePosition: 2
             })
             .end((err, res) => {
                 expect(res.status).to.equal(200);
                 expect(res.body).to.be.a('object');
                 expect(res.body.gameId).to.be.a('string');
+                done();
+            });
+    });
+
+    // noinspection JSUnresolvedFunction
+    it("POSTing unsupported event yields 404", (done) => {
+        chai.request(app)
+            .post(`/ping-pong/tables/${tableId}/events`)
+            .send({
+                eventType: 'FOOBAR',
+                playerId: playerOneId,
+            })
+            .end((err, res) => {
+                expect(res.status).to.equal(404);
                 done();
             });
     });
@@ -208,6 +222,20 @@ describe("/ping-pong/games/:gameId/events endpoints", () => {
                 expect(res.status).to.equal(200);
                 expect(res.body).to.be.a('object');
                 expect(res.body.gameStatus).to.equal('COMPLETE');
+                done();
+            });
+    });
+
+    // noinspection JSUnresolvedFunction
+    it("POSTing unsupported event yields 404", (done) => {
+        chai.request(app)
+            .post(`/ping-pong/games/${sharedPingPongGameId}/events`)
+            .send({
+                eventType: 'FOOBAR',
+                playerId: playerOneId,
+            })
+            .end((err, res) => {
+                expect(res.status).to.equal(404);
                 done();
             });
     });

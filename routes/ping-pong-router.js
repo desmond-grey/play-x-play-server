@@ -50,24 +50,30 @@ router.get('/tables/:tableId/game', function(req, res, next) {
 */
 // noinspection JSUnusedLocalSymbols,JSUnresolvedFunction
 router.post('/games/:gameId/events', function(req, res, next) {
-    // todo: handle other event types
     if (req.body.eventType === 'POINT_SCORED_BY_PLAYER') {
         const gameStatus = pingPongService.scorePointForPlayer(req.params.gameId, req.body.playerId);
         res.json(gameStatus);
+    } else {
+        res.status(404);
+        res.json({'errorMessage': 'Event type not supported'});
+        console.error(`Event type not supported: ${req.body.eventType}`);
     }
 });
 
 
 /*
-    POST game events via tableId (used in early controller versions)
+    POST game events via tableId
     Sample event: {"eventType": "POINT_SCORED_ON_TABLE", "tablePosition": 2}
 */
 // noinspection JSUnusedLocalSymbols,JSUnresolvedFunction
 router.post('/tables/:tableId/events', function(req, res, next) {
-    // todo: handle other event types
     if (req.body.eventType === 'POINT_SCORED_ON_TABLE_AT_POSITION') {
         const gameStatus = pingPongService.scorePointAtTablePosition(req.params.tableId, req.body.tablePosition);
         res.json(gameStatus);
+    } else {
+        res.status(404);
+        res.json({'errorMessage': 'Event type not supported'});
+        console.error(`Event type not supported: ${req.body.eventType}`);
     }
 });
 
