@@ -13,8 +13,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/health', healthRouter);
-app.use('/version', versionRouter);
-app.use('/ping-pong', pingPongRouter);
+app.use('/api/health', healthRouter);
+app.use('/api/version', versionRouter);
+app.use('/api/ping-pong', pingPongRouter);
 
 module.exports = app;
