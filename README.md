@@ -62,12 +62,22 @@ existing admin for access.
 
 ```shell script
 # once you have a associated with the server and download, an ssh command looks like this:
-ssh -i desmond.pem ubuntu@ec2-35-166-35-105.us-west-2.compute.amazonaws.com
+# (command below assumes you run from within the play-x-play-server dir and that play-x-play-server-resources is a sibling of that dir)
+ssh -i ../play-x-play-server-resources/desmond.pem ubuntu@ec2-35-166-35-105.us-west-2.compute.amazonaws.com
 ```
 
 Once logged in...
 
-### Starting the play-x-play-server instance
+### deploying a new build
+```shell script
+cd ./play-x-play-server
+git pull
+npm install
+sudo pm2 restart www 
+
+```
+
+### Managing the play-x-play-server instance
 ```shell script
 sudo pm2 list               # list all the PM2 managed apps, which in our case is just our ExpressJS app named "www"
 sudo pm2 describe www       # more details
