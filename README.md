@@ -62,8 +62,8 @@ existing admin for access.
 
 ```shell script
 # once you have a associated with the server and download, an ssh command looks like this:
-# (command below assumes you run from within the play-x-play-server dir and that play-x-play-server-resources is a sibling of that dir)
-ssh -i ../play-x-play-server-resources/desmond.pem ubuntu@ec2-35-166-35-105.us-west-2.compute.amazonaws.com
+# (command below assumes you run from within the play-x-play-server dir and that play-x-play dir is a sibling of that dir)
+ssh -i ../play-x-play/desmond.pem ubuntu@ec2-35-166-35-105.us-west-2.compute.amazonaws.com
 ```
 
 Once logged in...
