@@ -9,7 +9,7 @@
   "dependencies": {
     "debug": "~2.6.9",
     "express": "~4.16.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "morgan": "~1.9.1",
     "rewire": "^5.0.0",
     "uuid": "^3.4.0"
